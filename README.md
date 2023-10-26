@@ -18,6 +18,10 @@ This action will set / delete Branch Protection rules on specified branches of G
 **Required**  
 **Description** - Name of your GitHub repository
 
+### `branchName`
+**Required**  
+**Description** - Name of your targetted branch
+
 ### `rulesPath`
 **Required**  
 **Description** - The path of the Rules JSON file with Branch name as Key and Rules as Value. Format of the file is given below. The below JSON applies branch protection rules to release and main branches of a repo.
@@ -57,11 +61,12 @@ This action will set / delete Branch Protection rules on specified branches of G
 ```
 
 - name: Run Branch Protection
-  uses: mistereechapman/branch-protection@v1.1.0
+  uses: mistereechapman/branch-protection@v1
   with:
     token: '${{ secrets.GITHUB_ADMIN_ACCESS_TOKEN }}' 
     organisationName: Name-Of-Your-GitHub-Organization
     repositoryName: Name-Of-Your-Repository
+    branchName: Name-Of-Targetted-Branch
     rulesPath: ./rules.json 
     action: set
 ```
