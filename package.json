@@ -1,5 +1,5 @@
 {
-  "name": "branch-protection",
+  "name": "update-branch-protection",
   "version": "1.1.0",
   "description": "Custom GitHub Action based on Node.js to set branch protection rules",
   "main": "dist/index.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/venh/branch-protection.git"
+    "url": "git+https://github.com/mistereechapman/update-branch-protection.git"
   },
   "keywords": [
     "branch",
@@ -17,15 +17,15 @@
     "github",
     "action"
   ],
-  "author": "Venkatesh Subramanian",
-  "license": "ISC",
+  "author": "Eric Chapman",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/venh/branch-protection/issues"
+    "url": "https://github.com/mistereechapman/update-branch-protection/issues"
   },
-  "homepage": "https://github.com/venh/branch-protection#readme",
+  "homepage": "https://github.com/mistereechapman/update-branch-protection#readme",
   "dependencies": {
-    "@actions/core": "^1.4.0",
-    "@octokit/request": "^5.6.0",
-    "@vercel/ncc": "^0.28.6"
+    "@actions/core": "^1.10.1",
+    "@octokit/request": "^8.1.4",
+    "@vercel/ncc": "^0.38.1"
   }
 }

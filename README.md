@@ -10,9 +10,13 @@ This action will set / delete Branch Protection rules on specified branches of G
 **Required**  
 **Description** - This should be the token of a GitHub Admin / Organization Owner to be able to manage all repos within the organization, passed as a secret.
 
-### `org`
+### `organisationName`
 **Required**  
 **Description** - Name of your GitHub Organization.  
+
+### `repositoryName`
+**Required**  
+**Description** - Name of your GitHub repository
 
 ### `rulesPath`
 **Required**  
@@ -48,16 +52,16 @@ This action will set / delete Branch Protection rules on specified branches of G
 **Description** - This GitHub Custom action can be used to set / add / delete branch protection. The default value is set (if not specified). If add is assigned, it will add branch protection to every repo, if branch protection is not applied. If delete is assigned, it will remove branch protection from every repo, if branch protection is already applied.
 **Default** - 'set'
 
-
 # Usage
 
 ```
 
 - name: Run Branch Protection
-  uses: venh/branch-protection@v1.1.0
+  uses: mistereechapman/branch-protection@v1.1.0
   with:
     token: '${{ secrets.GITHUB_ADMIN_ACCESS_TOKEN }}' 
-    org: Name-Of-Your-GitHub-Organization 
+    organisationName: Name-Of-Your-GitHub-Organization
+    repositoryName: Name-Of-Your-Repository
     rulesPath: ./rules.json 
     action: set
 ```
