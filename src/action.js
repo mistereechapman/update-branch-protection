@@ -1,25 +1,26 @@
-const core = require("@actions/core");
-const { request: orgRequest } = require("@octokit/request");
-const fs = require("fs");
+import { getInput, debug, setFailed } from "@actions/core";
+import _request from "@octokit/request";
+const { request: orgRequest } = _request;
+import { existsSync, readFileSync } from "fs";
 
 var repoName = "";
 var branchName = "";
 
 async function run() {
-  const token = core.getInput("token", { required: true });
-  const orgName = core.getInput("organisationName", { required: true });
-  const rulesPath = core.getInput("rulesPath", { required: true });
-  repoName = core.getInput("repositoryName", { required: true });
-  branchName = core.getInput("branchName", { required: false });
+  const token = getInput("token", { required: true });
+  const orgName = getInput("organisationName", { required: true });
+  const rulesPath = getInput("rulesPath", { required: true });
+  repoName = getInput("repositoryName", { required: true });
+  branchName = getInput("branchName", { required: false });
   repoName = orgName + "/" + repoName;
-  const action = core.getInput("action", { required: true });
+  const action = getInput("action", { required: true });
   const canDeleteProtection = action == "set" || action == "delete";
   const canSetProtection = action == "set" || action == "add";
 
   var rulesObj;
   var branches;
   try {
-    if (!fs.existsSync(rulesPath)) {
+    if (!existsSync(rulesPath)) {
       throw "Rules JSON is missing.";
     }
 
@@ -29,7 +30,7 @@ async function run() {
         authorization: "token " + token,
       },
     });
-    const rules = fs.readFileSync(rulesPath, { encoding: "utf8", flag: "r" });
+    const rules = readFileSync(rulesPath, { encoding: "utf8", flag: "r" });
     rulesObj = JSON.parse(rules);
     keys = Object.keys(rulesObj);
     branches = await getBranches(request, repoName, branchName);
@@ -41,18 +42,18 @@ async function run() {
         }
 
         console.log("Deleting Branch Protection for " + branches[j].name + " branch of " + repoName);
-        core.debug("Deleting Branch Protection for " + branches[j].name + " branch of " + repoName);
+        debug("Deleting Branch Protection for " + branches[j].name + " branch of " + repoName);
         await deleteProtection(request, repoName, branches[j].name);
       }
       if (canSetProtection) {
         console.log("Setting Branch Protection for " + branches[j].name + " branch of " + repoName);
-        core.debug("Setting Branch Protection for " + branches[j].name + " branch of " + repoName);
+        debug("Setting Branch Protection for " + branches[j].name + " branch of " + repoName);
         await setProtection(request, repoName, branches[j].name, rulesObj[branches[j].name]);
       }
     }
   } catch (e) {
     console.error(e);
-    core.setFailed(e.stack);
+    setFailed(e.stack);
   }
 }
 
@@ -71,10 +72,10 @@ async function setProtection(request, repoName, branchName, ruleData) {
     const result = await request("PUT " + url, {
       data: ruleData,
     });
-    core.debug(result.data);
+    debug(result.data);
   } catch (e) {
     console.error(e);
-    core.setFailed("Exception Occurred in Set Protection: " + e.stack);
+    setFailed("Exception Occurred in Set Protection: " + e.stack);
   }
 }
 
@@ -87,7 +88,7 @@ async function deleteProtection(request, repoName, branchName) {
     }
   } catch (e) {
     console.error(e);
-    core.setFailed("Exception Occurred in Delete Protection: " + e.stack);
+    setFailed("Exception Occurred in Delete Protection: " + e.stack);
   }
 }
 
@@ -105,7 +106,7 @@ async function getBranches(request, repoName, branchName) {
     }
   } catch (e) {
     console.error(e);
-    core.setFailed("Exception Occurred in Get Branches: " + e.stack);
+    setFailed("Exception Occurred in Get Branches: " + e.stack);
   }
   return branchInfoArr;
 }
