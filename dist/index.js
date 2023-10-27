@@ -26754,85 +26754,36 @@
   /******/ 	}
   /******/ 	
   /************************************************************************/
-  /******/ 	/* webpack/runtime/compat get default export */
-  /******/ 	(() => {
-  /******/ 		// getDefaultExport function for compatibility with non-harmony modules
-  /******/ 		__nccwpck_require__.n = (module) => {
-  /******/ 			var getter = module && module.__esModule ?
-  /******/ 				() => (module['default']) :
-  /******/ 				() => (module);
-  /******/ 			__nccwpck_require__.d(getter, { a: getter });
-  /******/ 			return getter;
-  /******/ 		};
-  /******/ 	})();
-  /******/ 	
-  /******/ 	/* webpack/runtime/define property getters */
-  /******/ 	(() => {
-  /******/ 		// define getter functions for harmony exports
-  /******/ 		__nccwpck_require__.d = (exports, definition) => {
-  /******/ 			for(var key in definition) {
-  /******/ 				if(__nccwpck_require__.o(definition, key) && !__nccwpck_require__.o(exports, key)) {
-  /******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-  /******/ 				}
-  /******/ 			}
-  /******/ 		};
-  /******/ 	})();
-  /******/ 	
-  /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-  /******/ 	(() => {
-  /******/ 		__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-  /******/ 	})();
-  /******/ 	
-  /******/ 	/* webpack/runtime/make namespace object */
-  /******/ 	(() => {
-  /******/ 		// define __esModule on exports
-  /******/ 		__nccwpck_require__.r = (exports) => {
-  /******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-  /******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-  /******/ 			}
-  /******/ 			Object.defineProperty(exports, '__esModule', { value: true });
-  /******/ 		};
-  /******/ 	})();
-  /******/ 	
   /******/ 	/* webpack/runtime/compat */
   /******/ 	
   /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
   /******/ 	
   /************************************************************************/
   var __webpack_exports__ = {};
-  // This entry need to be wrapped in an IIFE because it need to be in strict mode.
+  // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
   (() => {
-  "use strict";
-  __nccwpck_require__.r(__webpack_exports__);
-  /* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(2186);
-  /* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_0__);
-  /* harmony import */ var _octokit_request__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(6234);
-  /* harmony import */ var _octokit_request__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__nccwpck_require__.n(_octokit_request__WEBPACK_IMPORTED_MODULE_1__);
-  /* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(7147);
-  /* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__nccwpck_require__.n(fs__WEBPACK_IMPORTED_MODULE_2__);
-  
-  
-  const { request: orgRequest } = (_octokit_request__WEBPACK_IMPORTED_MODULE_1___default());
-  
+  const core = __nccwpck_require__(2186);
+  const { request: orgRequest } = __nccwpck_require__(6234);
+  const fs = __nccwpck_require__(7147);
   
   var repoName = "";
   var branchName = "";
   
   async function run() {
-    const token = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)("token", { required: true });
-    const orgName = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)("organisationName", { required: true });
-    const rulesPath = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)("rulesPath", { required: true });
-    repoName = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)("repositoryName", { required: true });
-    branchName = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)("branchName", { required: false });
+    const token = core.getInput("token", { required: true });
+    const orgName = core.getInput("organisationName", { required: true });
+    const rulesPath = core.getInput("rulesPath", { required: true });
+    repoName = core.getInput("repositoryName", { required: true });
+    branchName = core.getInput("branchName", { required: false });
     repoName = orgName + "/" + repoName;
-    const action = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)("action", { required: true });
+    const action = core.getInput("action", { required: true });
     const canDeleteProtection = action == "set" || action == "delete";
     const canSetProtection = action == "set" || action == "add";
   
     var rulesObj;
     var branches;
     try {
-      if (!(0,fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(rulesPath)) {
+      if (!fs.existsSync(rulesPath)) {
         throw "Rules JSON is missing.";
       }
   
@@ -26842,7 +26793,7 @@
           authorization: "token " + token,
         },
       });
-      const rules = (0,fs__WEBPACK_IMPORTED_MODULE_2__.readFileSync)(rulesPath, { encoding: "utf8", flag: "r" });
+      const rules = fs.readFileSync(rulesPath, { encoding: "utf8", flag: "r" });
       rulesObj = JSON.parse(rules);
       keys = Object.keys(rulesObj);
       branches = await getBranches(request, repoName, branchName);
@@ -26854,18 +26805,18 @@
           }
   
           console.log("Deleting Branch Protection for " + branches[j].name + " branch of " + repoName);
-          (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.debug)("Deleting Branch Protection for " + branches[j].name + " branch of " + repoName);
+          core.debug("Deleting Branch Protection for " + branches[j].name + " branch of " + repoName);
           await deleteProtection(request, repoName, branches[j].name);
         }
         if (canSetProtection) {
           console.log("Setting Branch Protection for " + branches[j].name + " branch of " + repoName);
-          (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.debug)("Setting Branch Protection for " + branches[j].name + " branch of " + repoName);
+          core.debug("Setting Branch Protection for " + branches[j].name + " branch of " + repoName);
           await setProtection(request, repoName, branches[j].name, rulesObj[branches[j].name]);
         }
       }
     } catch (e) {
       console.error(e);
-      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)(e.stack);
+      core.setFailed(e.stack);
     }
   }
   
@@ -26884,10 +26835,10 @@
       const result = await request("PUT " + url, {
         data: ruleData,
       });
-      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.debug)(result.data);
+      core.debug(result.data);
     } catch (e) {
       console.error(e);
-      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)("Exception Occurred in Set Protection: " + e.stack);
+      core.setFailed("Exception Occurred in Set Protection: " + e.stack);
     }
   }
   
@@ -26900,7 +26851,7 @@
       }
     } catch (e) {
       console.error(e);
-      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)("Exception Occurred in Delete Protection: " + e.stack);
+      core.setFailed("Exception Occurred in Delete Protection: " + e.stack);
     }
   }
   
@@ -26918,7 +26869,7 @@
       }
     } catch (e) {
       console.error(e);
-      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)("Exception Occurred in Get Branches: " + e.stack);
+      core.setFailed("Exception Occurred in Get Branches: " + e.stack);
     }
     return branchInfoArr;
   }
